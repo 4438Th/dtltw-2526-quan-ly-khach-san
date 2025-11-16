@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Phòng Superior",
+    "type": "Superior",
+    "price": 600000,
+    "description": "Phòng hướng biển, 1 giường đôi."
+  },
+  {
+    "id": 2,
+    "name": "Phòng Deluxe",
+    "type": "Deluxe",
+    "price": 800000,
+    "description": "Phòng rộng, 2 giường đơn."
+  },
+  {
+    "id": 3,
+    "name": "Phòng Suite",
+    "type": "Suite",
+    "price": 1500000,
+    "description": "Phòng cao cấp, kèm phòng khách."
+  }
+]
