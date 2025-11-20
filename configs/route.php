@@ -8,8 +8,8 @@ define('MODULES_PATH', SRC_PATH . '/Modules');
 define('SHARE_PATH', SRC_PATH . '/Share');
 
 $route = [
-    'defaultModule' => 'HomeModule',
-    'defaultController' => 'HomeController',
+    'defaultModule' => 'AuthModule',
+    'defaultController' => 'AuthController',
     'defaultAction' => 'index',
     'defaultParams' => []
 ];

@@ -4,7 +4,6 @@ require_once ROOT_PATH . '/configs/route.php';
 require_once CORE_PATH . '/Router.php';
 function coreAutoloader($className)
 {
-
     if (strpos($className, 'core\\') === 0) {
 
         // 2. Loại bỏ Namespace 'core\' để lấy tên lớp thuần
