@@ -1,0 +1,8 @@
+# Bật mod_rewrite của Apache để sử dụng các quy tắc rewrite
+RewriteEngine On
+#Kiểm tra đường dẫn yêu cầu "không phải là `file thật` trên server"
+RewriteCond %{REQUEST_FILENAME} !-f
+#Kiểm tra đường dẫn yêu cầu "không phải là `thư mục thật` trên server"
+RewriteCond %{REQUEST_FILENAME} !-d
+#Thực hiện `rewrite` lại URL
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
