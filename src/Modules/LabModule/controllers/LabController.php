@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\Auth;
+namespace Modules\Lab;
 
 use core\BaseController;
 
-class AuthController extends BaseController
+class LabController extends BaseController
 {
     public function index()
     {
-        $this->render('Auth', 'signup', []);
+        $this->render('Lab', 'lab', []);
     }
     public function detail($id = '', $name = '')
     {
