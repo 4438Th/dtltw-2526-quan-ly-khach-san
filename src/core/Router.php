@@ -28,6 +28,9 @@ class Router
     // Hàm xử lý url
     function handleURL()
     {
+        // Nếu request trỏ tới file/tài nguyên tồn tại trên hệ thống, phục vụ trực tiếp
+        $this->serveStaticIfExists();
+
         // Xử lý Custom Routes
         if ($this->handleCustomRoutes()) {
             return;
@@ -151,14 +154,67 @@ class Router
         return trim($url, '/');
     }
 
+    // Nếu request tương ứng với file trên hệ thống, phục vụ file đó trực tiếp.
+    protected function serveStaticIfExists()
+    {
+        $requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $clean = trim($requestPath, '/');
+
+        // Nếu là root, không phục vụ
+        if ($clean === '') return;
+
+        $fullPath = realpath(ROOT_PATH . '/' . $clean);
+        if ($fullPath && is_file($fullPath) && strpos($fullPath, realpath(ROOT_PATH)) === 0) {
+            $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+            // Nếu là PHP, include để thực thi bằng PHP engine (không xuất source)
+            if ($ext === 'php') {
+                include $fullPath;
+                exit;
+            }
+
+            // Khác (ảnh, css, js, pdf...) -> gửi nội dung
+            $mime = 'application/octet-stream';
+            if (function_exists('mime_content_type')) {
+                $t = mime_content_type($fullPath);
+                if ($t) $mime = $t;
+            }
+            header('Content-Type: ' . $mime);
+            header('Content-Length: ' . filesize($fullPath));
+            readfile($fullPath);
+            exit;
+        }
+    }
+
     // --- Phương thức lấy Phương thức HTTP đã chuẩn hóa ---
     function getHttpMethod()
     {
-        // Sử dụng POST nếu có trường _method để mô phỏng PUT/DELETE (cho Form HTML)
+        // 1) Kiểm tra header X-HTTP-Method-Override (thường dùng cho AJAX/clients)
+        $override = null;
+        if (!empty($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+            $override = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+        } elseif (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            if (!empty($headers['X-HTTP-Method-Override'])) {
+                $override = $headers['X-HTTP-Method-Override'];
+            } elseif (!empty($headers['x-http-method-override'])) {
+                $override = $headers['x-http-method-override'];
+            }
+        }
+        if ($override) {
+            return strtoupper($override);
+        }
+
+        // 2) Nếu là form HTML gửi POST nhưng kèm _method, dùng để mô phỏng PUT/DELETE
         if (isset($_POST['_method'])) {
             return strtoupper($_POST['_method']);
         }
-        // Trả về phương thức gốc của yêu cầu
+
+        // 3) Cho phép override qua query string hoặc request param (ví dụ: ?_method=PUT)
+        if (isset($_REQUEST['_method'])) {
+            return strtoupper($_REQUEST['_method']);
+        }
+
+        // 4) Nếu không có override, trả về phương thức gốc
         return strtoupper($_SERVER['REQUEST_METHOD']);
     }
 

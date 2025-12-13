@@ -155,10 +155,13 @@
 
     try {
       // Sử dụng API PUT hoặc PATCH, tùy thuộc vào thiết kế backend của bạn
-      const response = await fetch(`${BASE_URL_JS}api/rooms/${id}`, {
-        method: 'PUT', // Hoặc 'PATCH'
+      // Một số host chặn PUT/PATCH; gửi POST và override method qua header/query
+      const updateUrl = `${BASE_URL_JS}api/rooms/${id}?_method=PUT`;
+      const response = await fetch(updateUrl, {
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-HTTP-Method-Override': 'PUT'
         },
         body: JSON.stringify(roomData)
       });
@@ -189,10 +192,13 @@
     try {
       const deleteUrl = `${BASE_URL_JS}api/rooms/${id}`;
 
-      const response = await fetch(deleteUrl, {
-        method: 'DELETE',
+      // Dùng POST với override để tương thích free host chặn DELETE
+      const fallbackUrl = `${deleteUrl}?_method=DELETE`;
+      const response = await fetch(fallbackUrl, {
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-HTTP-Method-Override': 'DELETE'
         }
       });
 
@@ -248,6 +254,11 @@
         submitRoomBtn.classList.add('btn-primary');
         submitRoomBtn.innerHTML = '<i class="fas fa-save"></i> Cập Nhật';
 
+        // Thiết lập _method và action của form để fallback (non-AJAX)
+        var hiddenMethod = document.getElementById('_method');
+        if (hiddenMethod) hiddenMethod.value = 'PUT';
+        roomForm.action = `${BASE_URL_JS}api/rooms/${id}`;
+
         // 5. Mở Modal
         roomFormModal.show();
       }
@@ -261,6 +272,11 @@
 
   // Xử lý mở modal bằng JS
   addNewRoomBtn.addEventListener('click', function() {
+    // Chuẩn bị form cho tạo mới
+    currentRoomId = null;
+    var hiddenMethod = document.getElementById('_method');
+    if (hiddenMethod) hiddenMethod.value = '';
+    roomForm.action = `${BASE_URL_JS}api/rooms`;
     roomFormModal.show();
   });
 
@@ -299,6 +315,10 @@
     submitRoomBtn.classList.remove('btn-primary');
     submitRoomBtn.classList.add('btn-success');
     submitRoomBtn.innerHTML = '<i class="fas fa-save"></i> Lưu Phòng';
+    // Reset hidden method and action (fallback)
+    var hiddenMethod = document.getElementById('_method');
+    if (hiddenMethod) hiddenMethod.value = '';
+    roomForm.action = `${BASE_URL_JS}api/rooms`;
   });
 
   // Xử lý sự kiện tìm kiếm

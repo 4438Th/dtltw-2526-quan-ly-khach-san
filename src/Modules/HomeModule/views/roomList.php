@@ -34,7 +34,8 @@
                 <h5 class="modal-title" id="roomFormModalLabel"><i class="fas fa-plus-circle"></i> Thêm phòng</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="roomForm">
+            <form id="roomForm" method="POST" action="<?php echo BASE_URL; ?>api/rooms">
+                <input type="hidden" name="_method" id="_method" value="">
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label for="roomName" class="form-label">Tên phòng:</label>
@@ -54,7 +55,7 @@
                     <div class="mb-3">
                         <label for="roomPrice" class="form-label">Giá phòng (VNĐ):</label>
                         <input type="number" class="form-control" id="roomPrice" name="price" required min="10000" placeholder="Ví dụ: 350000">
-                        <div class="invalid-feedback">Giá phòng phải là số lớn hơn 0.</div>
+                        <div class="invalid-feedback">Giá phòng phải là số và tối thiểu 10000.</div>
                     </div>
                 </div>
                 <div class="modal-footer border-0">

@@ -18,6 +18,7 @@ return [
             'controller' => 'LabController',
             'action'    => 'index',
         ],
+
         // URL: /api/rooms
         // GET: Lấy TẤT CẢ phòng
         'GET /api/rooms' => [

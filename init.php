@@ -12,18 +12,16 @@ if (!defined('BASE_URL')) {
 }
 // BASE_ASSETS_URL
 if (!defined('BASE_ASSETS_URL')) {
-    define('BASE_ASSETS_URL', BASE_URL . 'assets/');
+    define('BASE_ASSETS_URL', BASE_URL . 'public/assets/');
 }
 // LOCAL ROOT PATH
-define('ROOT_PATH', dirname(__DIR__)); // Đường dẫn tới thư mục gốc tại local
+define('ROOT_PATH', __DIR__); // Đường dẫn tới thư mục gốc tại local
 define('CONFIGS_PATH', ROOT_PATH . '/configs');
 define('SRC_PATH', ROOT_PATH . '/src');
-define('PUBLIC_PATH', ROOT_PATH . '/public');
-define('ASSETS_PATH', PUBLIC_PATH . '/assets');
 define('CORE_PATH', SRC_PATH . '/core');
 define('MODULES_PATH', SRC_PATH . '/Modules');
 define('SHARE_PATH', SRC_PATH . '/Share');
-// Yêu cầu file cấu hình Router
+// Yêu cầu cấc file cấu hình
 require_once CONFIGS_PATH . '/database.php';
 require_once CORE_PATH . '/Router.php';
 // Hàm tự động load core

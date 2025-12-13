@@ -57,7 +57,7 @@ class RoomModel extends BaseModel
      * Xóa một phòng dựa trên ID. (Delete)
      *
      * @param int $id ID của phòng cần xóa.
-     * @return bool True nếu thành công.
+     * @return bool True nếu thành công.    
      */
     public function deleteRoom(int $id)
     {
